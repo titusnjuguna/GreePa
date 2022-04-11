@@ -7,7 +7,6 @@ import ForgotPassword from "../views/ForgotPassword.vue";
 import Login from "../views/Login.vue";
 
 Vue.use(VueRouter);
-
 const routes = [
   {
     path: "/",
@@ -18,27 +17,27 @@ const routes = [
     },
   },
   {
-    path: "/blogs ",
-    name: "Blogs ",
+    path: "/blogs",
+    name: "Blogs",
     component: Blogs,
     meta:{
-      title:"Blogs",
+      title:"Blogs"
     },
   },
   {
-    path: "/register ",
+    path: "/register",
     name: "Register",
     component: Register,
     meta: {
-      title: "Register",
+      title: "Register"
     },
   },
   {
     path: "/login",
-    name: "Login ",
+    name: "Login",
     component: Login,
     meta: {
-      title: "Login",
+      title: "Login"
     },
   },
   {
@@ -56,8 +55,8 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
-router.beforeEach((to, from, next)=>{
-  document.title = `${to.meta.title}|GreePa`;
+router.beforeEach((to,from,next) => {
+  document.title = `${to.meta.title}| GreePa`;
   next();
 });
 

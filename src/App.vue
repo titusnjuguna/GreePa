@@ -11,8 +11,9 @@
 
 <script>
 import Navigation from '@/components/Navigation.vue';
-
 import Footer from '@/components/Footer.vue';
+import firebase from "firebase/app";
+import "firebase/auth";
 export default {
   name: "app",
   components: {Navigation,Footer},
@@ -23,13 +24,12 @@ export default {
   },
   created() {
     this.checkRoute();
+    console.log(firebase.auth.currentUser.uid)
   },
   mounted() {},
   methods: {
     checkRoute(){
-      if(this.$route.name==="Login"||
-       this.$route.name==="Register"||
-        this.$route.name==="ForgotPassword"){
+      if(this.$route.name==="Login"|| this.$route.name==="Register"||  this.$route.name==="ForgotPassword"){
       this.navigation= true;
       return;
       }
@@ -71,6 +71,11 @@ export default {
   text-transform: uppercase;
   color: black;
 }
+.error {
+  text-align: center;
+  font-size: 12px;
+  color: red;
+}
 
 .link-light {
   color: #fff;
@@ -85,6 +90,24 @@ export default {
 .arrow-light {
   path {
     fill: #fff;
+  }
+}
+button,
+.router-button {
+  transition: 500ms ease all;
+  cursor: pointer;
+  margin-top: 24px;
+  padding: 12px 24px;
+  background-color: #303030;
+  color: #fff;
+  border-radius: 20px;
+  border: none;
+  text-transform: uppercase;
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    background-color: rgba(48, 48, 48, 0.7);
   }
 }
 .blog-card-wrap {

@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import firebase from "firebase/app"
+import "firebase/auth"
+import db from "../firebase/firebaseInit"
 
 Vue.use(Vuex)
 
@@ -13,13 +16,23 @@ export default new Vuex.Store({
 
     ],
     editPost: null,
+    user: null,
+    profileEmail: null,
+    profileFirstName: null,
+    profileLastName: null,
+    profileUserName: null,
+    profileId: null,
+    profileInitials: null
   },
   mutations: {
     toggleEditPost(state,payload){
       state.editPost = payload;
-    }
+    },
   },
   actions: {
+    asynx getCurrentUser({commit},user){
+      const database = await db.collection("users").
+    }
   },
   modules: {
   }

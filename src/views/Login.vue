@@ -17,7 +17,9 @@
               </div>
           </div>
           <router-link class="forgot-password" :to="{name:'ForgotPassword'}">Forgot Password</router-link>
-        <button >Sign In</button>
+          <div class="error">{{this.errMsg}}</div>
+        
+        <button @click.prevent="signIn">Sign In</button>
       <div class="angle"></div>
     
     
@@ -29,19 +31,38 @@
 </template>
 
 <script>
-import email from "../assets/Icons/envelope-regular.svg";
-import lock from "../assets/Icons/lock-alt-solid.svg";
-
-
+import email from "../assets/Icons/envelope-regular.svg"
+import lock from "../assets/Icons/lock-alt-solid.svg"
+import firebase from "firebase/app"
+import "firebase/auth"
 export default {
     name:"Login",
     components:{email,lock},
     data(){
         return{
-            email: null,
-            password: null
+            email: "",
+            password: "",
+            err: null,
+            errMsg:""
         }
 
+    },
+    methods:{
+      signIn(){
+        firebase.auth().signInWithEmailAndPassword(this.email,this.password).then(()=>{
+          this.$router.push({name: "Home"});
+          this.err = false;
+          this.errMsg = "";
+          console.log(firebase.auth().currentUser.uid)
+        }).catch((err)=>{
+          this.err = true;
+          this.errMsg = err.message;
+
+        }
+          
+        );
+
+      }
     }
 
 }
