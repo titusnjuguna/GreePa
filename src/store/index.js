@@ -25,15 +25,32 @@ export default new Vuex.Store({
     profileInitials: null
   },
   mutations: {
-    toggleEditPost(state,payload){
+    toggleEditPost(state, payload) {
       state.editPost = payload;
     },
+    setProfileInfo(state, doc) {
+      state.profileId = doc.id;
+      state.profileEmail = doc.data().email;
+      state.profileFirstName = doc.data().firstname;
+      state.profileLastName = doc.data().lastname;
+      state.profileUserName = doc.data().username;
+      console.log(state.profileId)
+
+    },
+    setProfileInitials(state) {
+      state.profileInitials = state.profileFirstName.match(/(\b\S)?/g).join("") +
+        state.profileLastName.match(/(\b\S)?/g).join("")
+    }
   },
   actions: {
-    asynx getCurrentUser({commit},user){
-      const database = await db.collection("users").
-    }
+    async getCurrentUser({ commit }) {
+      const database = await db.collection("users").doc(firebase.auth().currentUser.uid);
+      const dbResult = await database.get();
+      commit("setProfileInfo", dbResult);
+      commit("setProfileInitials");
+    },
+
   },
   modules: {
   }
-})
+});
