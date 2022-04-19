@@ -5,6 +5,10 @@ import Blogs from "../views/Blogs.vue";
 import Register from "../views/Register.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import Login from "../views/Login.vue";
+import Admin from "../views/Admin.vue";
+import Profile from "../views/Profile.vue";
+import CreatePost from "../views/CreatePost.vue";
+
 
 Vue.use(VueRouter);
 const routes = [
@@ -48,6 +52,31 @@ const routes = [
       title: "Change Password",
     },
   },
+  {
+    path: "/admin",
+    name: "Admin",
+    component: Admin,
+    meta: {
+      title: "Admin"
+    },
+  },
+  {
+    path: "/Create-Post",
+    name: "CreatePost",
+    component: CreatePost,
+    meta: {
+      title: "Create Post"
+    },
+  },
+  {
+    path: "/profile",
+    name: "Profile",
+    component: Profile,
+    meta: {
+      title: "Profile"
+    },
+  },
+  
 ];
 
 const router = new VueRouter({

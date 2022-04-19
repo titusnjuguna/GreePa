@@ -5,15 +5,16 @@
             <router-link class="header" :to="{name:'Home'}"> GreePa </router-link>
         </div>
         <div class="nav-link">
-            <ul>
+            <ul v-show="!mobile"> 
                 <router-link class="link" :to="{name: 'Home'}"> Home </router-link>
                 <router-link class="link" :to="{name: 'Blogs'}">Blogs</router-link>
-                <router-link class="link" to="#">Create blogs</router-link>
-                <router-link class="link" :to="{ name: 'Login' }">Login/Register</router-link>
+                <router-link class="link" :to="{name: 'CreatePost'}">Create blogs</router-link>
+                <router-link v-if="!user" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
             </ul>
-            <div class="profile" ref="profile">
+            <div v-if="user" @click="toggleProfileMenu" class="profile" ref="profile"> 
+
                 <span>{{this.$store.state.profileInitials}}</span>
-                <div class="profile-menu">
+                <div v-show="profileMenu" class="profile-menu">
                     <div class="info">
                         <p class="initials">{{ this.$store.state.profileInitials }}</p>
                           <div class="right">
@@ -24,20 +25,20 @@
                     </div>
                     <div class="options">
                         <div class="option">
-                            <router-link class="option" :to="{ name: 'Profile' }">
+                            <router-link class="option" :to="{'name': Profile}" >
                                 <userIcon class="icon" />
                                 <p>Profile</p>
                             </router-link>
 
                         </div>
                         <div class="option">
-                            <router-link class="option" :to="{ name: 'Admin' }">
+                            <router-link class="option" :to="{'name': Admin}" >
                                 <adminIcon class="icon" />
                                 <p>Admin</p>
                             </router-link>
                         </div>
-                        <div class="option">
-                            <signOutIcon class="icon" />
+                        <div @click="signOut" class="option">
+                            <signOutIcon class="icon"/>
                             <p>Sign Out</p>
                         </div>
                     </div>
@@ -54,7 +55,7 @@
             <router-link class="link" :to="{name:'Home'}">Home</router-link>
             <router-link class="link" :to="{name:'Blogs'}">blogs</router-link>
             <router-link class="link" to="#">Create blogs</router-link>
-            <router-link class="link" :to="{ name: 'Login' }">Login/Register</router-link>
+            <router-link v-if="!user" class="link" :to="{ name: 'Login' }">Login/Register</router-link>
         </ul>
 
     </transition>
@@ -67,6 +68,8 @@ import menuIcon from '@/assets/Icons/bars-regular.svg';
 import userIcon from "../assets/Icons/user-alt-light.svg";
 import adminIcon from "../assets/Icons/user-crown-light.svg";
 import signOutIcon from "../assets/Icons/sign-out-alt-regular.svg";
+import firebase from "firebase/app";
+import "firebase/auth";
 
 export default {
     
@@ -76,9 +79,10 @@ export default {
 },
 data(){
     return{
+        profileMenu: null,
         mobile: null,
         mobileNav: null,
-        windowWidth: null
+        windownWidth: null
     };
 
 },
@@ -88,9 +92,10 @@ created(){
 
 },
 methods:{
+
     checkScreen(){
-        this.windowWidth = window.innerWidth;
-        if(this.windowWidth <= 700){
+        this.windownWidth = window.innerWidth;
+        if(this.windownWidth <= 750){
             this.mobile =true;
             return;
         }
@@ -98,16 +103,36 @@ methods:{
         this.mobileNav = false;
         return;
     },
+
     toggleMobileNav(){
         this.mobileNav = !this.mobileNav
-    }
+    },
+
+    toggleProfileMenu(e){ 
+      if(e.target === this.$refs.profile) {
+        this.profileMenu = !this.profileMenu
+
+      }
+      
+    },
+
+    signOut(){
+      firebase.auth().signOut();
+      window.location.reload();
+    },
 
 },
 
-    
+computed:{
+  user(){
+    return this.$store.state.user;
+  }
+}
+   
 };
 </script>
-<style lang='scss' scoped>
+
+<style lang="scss" scoped>
 header {
   background-color: #fff;
   padding: 0 25px;
@@ -134,7 +159,7 @@ header {
         text-decoration: none;
       }
     }
-    .nav-links {
+    .nav-link {
       position: relative;
       display: flex;
       flex: 1;
@@ -163,18 +188,20 @@ header {
         span {
           pointer-events: none;
         }
-        .profile-menu {
+        .profile-menu{
           position: absolute;
           top: 60px;
           right: 0;
           width: 250px;
           background-color: #303030;
           box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+
           .info {
             display: flex;
             align-items: center;
             padding: 15px;
             border-bottom: 1px solid #fff;
+
             .initials {
               position: initial;
               width: 40px;
@@ -264,5 +291,4 @@ header {
     transform: translateX(-250px);
   }
 }
-
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div class="app-wrapper">
     <div class="app">
-      <Navigation v-if="!navigation"/>
+      <Navigation v-show="!navigation"/>
       <router-view />
       <Footer v-if="!navigation" />
       
@@ -23,8 +23,14 @@ export default {
     };
   },
   created() {
+    firebase.auth().onAuthStateChanged((user) => {
+      this.$store.commit("updateUser",user);
+      if(user){
+        this.$store.dispatch("getCurrentUser",user);
+      }
+    });
     this.checkRoute();
-    console.log(firebase.auth.currentUser.uid)
+    
   },
   mounted() {},
   methods: {

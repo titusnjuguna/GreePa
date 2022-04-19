@@ -28,9 +28,9 @@
                   <lock class="icon"/>
               </div>
           </div>
-          <div v-show="error" class="error">{{this.errMsg}}</div>
+          <div v-show="err" class="error">{{this.errMsg}}</div>
           
-        <button @click.prevent="register">Sign Up</button>
+        <button @click.prevent= "register" >Sign Up</button>
       <div class="angle"></div>
     
     
@@ -69,11 +69,11 @@ export default {
   methods:{
     async register(){
       if(
-        this.firstname !== ""&&
-        this.lastname  !== ""&&
-        this.username !==""&&
-        this.email !=="" &&
-        this.password !==""
+        this.firstname !== "" &&
+        this.lastname  !== "" &&
+        this.username !== "" &&
+        this.email !== "" &&
+        this.password !== ""
 
       ){
         this.err==false;
@@ -89,7 +89,7 @@ export default {
           email: this.email,
 
         });
-        this.$router.push({name: "Home"});
+        this.$router.push({ name: "Home"});
 
         return;
 

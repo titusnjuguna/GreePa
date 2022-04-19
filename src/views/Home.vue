@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <BlogPost :post="welcomeScreen" />
+    <BlogPost v-if="!user" :post="welcomeScreen" />
     <BlogPost v-for="(post,index) in samplePost" :key="index" :post="post" /> 
     <div class="blog-card-wrap">
       <div class="container">
@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="container">
-      <div class="updates">
+      <div v-if="!user" class="updates">
         <h2>Never miss a post. Register for your free account today! </h2>
         <router-link  class="router-button" to="#"> Register To Greepa <Arrow class="arrow arrow-light"/> </router-link>
 
@@ -57,7 +57,12 @@ export default {
     sampleblogCards(){
       return this.$store.state.sampleblogCards
       
-    }
+    },
+    
+    user(){
+    return this.$store.state.user;
+  }
+
   }
 };
 </script>
@@ -69,8 +74,8 @@ export default {
     margin-bottom: 32px;
   }
 }
-.updates {
-  .container {
+.container {
+  .updates {
     padding: 100px 25px;
     display: flex;
     flex-direction: column;
