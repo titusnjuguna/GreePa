@@ -3,7 +3,7 @@
       <div class="modal-content">
           <close @click="closePreview" class="icon" />
           <img :src="this.blogCoverPhoto" alt="" />
-          <p> Hello Motorola </p>
+          
          
       </div>
   </div>

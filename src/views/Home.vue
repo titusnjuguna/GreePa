@@ -1,12 +1,12 @@
 <template>
   <div class="home">
     <BlogPost v-if="!user" :post="welcomeScreen" />
-    <BlogPost v-for="(post,index) in samplePost" :key="index" :post="post" /> 
+    <BlogPost v-for="(post,index) in blogPostsFeed" :key="index" :post="post" /> 
     <div class="blog-card-wrap">
       <div class="container">
         <h3>View Recent Post </h3>
         <div class="blog-cards">
-          <BlogCards v-for="(post,index) in sampleblogCards" :key="index" :post="post" />
+          <BlogCards v-for="(post,index) in blogPostsCards" :key="index" :post="post" />
         </div>
       </div>
     </div>
@@ -39,23 +39,18 @@ export default {
         welcomeScreen: true,
         photo: "coding",
       },
-      samplePost:[
-        {title:"This is our home",
-        blogHTML: "This is for all christias who are i jesus",
-        blogCoverPhoto:"beautiful-stories"
-        },
-        {title:"This is our home",
-        blogHTML: "This is for all christias who are i jesus",
-        blogCoverPhoto:"beautiful"
-        }
-      ],
+      
       
       }
         
   },
   computed:{
-    sampleblogCards(){
-      return this.$store.state.sampleblogCards
+     blogPostsFeed(){
+      return this.$store.getters.blogPostsFeed
+      
+    },
+    blogPostsCards(){
+      return this.$store.getters.blogPostsCards
       
     },
     

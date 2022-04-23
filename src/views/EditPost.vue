@@ -24,8 +24,8 @@
               <vue-editor :editorOptions="editorSettings"  v-model="blogHTML" useCustommageHandler @image-added ="imageHandler" />
           </div>
           <div class="blog-actions">
-              <button @click="uploadblog">Publish Post</button>
-              <router-link class="router-button" :to="{name: 'BlogPreview'}">Post Preview</router-link>
+              <button @click="updateblog">Save Changes</button>
+              <router-link class="router-button" :to="{name: 'BlogPreview'}"> Preview Changes</router-link>
           </div>
 
       </div>
@@ -53,6 +53,7 @@ export default {
         return{
             file: null,
             loading:null,
+            currentblog:null,
             error: null,
             errorMsg: null,
             editorSettings:{
@@ -73,7 +74,8 @@ export default {
             this.$store.commit("openPhotoPreview");
 
         },
-        uploadblog(){
+       async updateblog(){
+         const database = await db.collection("blogPosts").doc(this.routeID)
             if(this.blogTitle.length !== 0 && this.blogHTML.length !== 0){
                 if(this.file){
                   this.loading = true;
@@ -90,19 +92,17 @@ export default {
                           },
                           async () => {
                             const downloadURL = await docRef.getDownloadURL();
-                            const timestamp = await Date.now();
-                            const database = await db.collection('blogPosts').doc();
+                            
 
-                            await database.set({
-                              blogId:database.id,
+                            await database.update({
+                              
                               blogHTML : this.blogHTML,
                               blogCoverPhoto : downloadURL,
                               blogCoverPhotoName: this.blogCoverPhotoName,
                               blogTitle: this.blogTitle,
-                              profileId: this.profileId,
-                              date: timestamp,
+                                                            
                             });
-                            await this.$store.dipatch("getPost");
+                            await this.$store.dipatch("updatePost", this.routeID);
                             this.loading = false;
                             this.$router.push({name : "Viewblog",params:{blogid:database.id}});
                             //redirect page
@@ -110,12 +110,16 @@ export default {
                           );
                           return;
                           }
-                          this.error=true;
-                          this.errorMsg ="Please Make Sure you upload a cover Image";
-                          setTimeout(() => {
-                          this.error = false;
-                          },5000);
+                          this.loading=true;
+                          await database.update({
+                            blogHTML: this.blogHTML,
+                            blogTitle: this.blogTitle,
+                          });
+                          await this.$store.dispatch("updatePost", this.routeID);
+                          this.loading = false;
+                          this.$router.push({ name: "Viewblog",params: {blogid: database.id}});
                           return;
+                          
                           }
                         this.error=true;
                         this.errorMsg ="Please Make Sure you upload populate blog title ad post";
@@ -124,7 +128,9 @@ export default {
                         },5000);
                         return;
         },
-        imageHandler(file,Editor,cursorLocation,resetUploader){
+        
+
+       imageHandler(file,Editor,cursorLocation,resetUploader){
           const storageRef = firebase.storage().ref();
           const docRef = storageRef.child(`documents/blogPostPhotos/${file.name}`);
           docRef.put(file).on("state_changed",
@@ -142,6 +148,14 @@ export default {
         },
 
     },
+    async mounted(){
+        this.routeID = this.$route.params.blogid;
+        this.currentblog = await this.$store.state.blogPosts.filter((post) => {
+            return post.blogID = this.routeID;
+        });
+        this.$store.commit("setblogState", this.currentblog[0]);
+    },
+
     computed:{
         profileId(){
             return this.$store.state.profileId;

@@ -1,6 +1,6 @@
 <template>
   <div class="app-wrapper">
-    <div class="app">
+    <div class="app" v-if="this.$store.state.postLoaded">
       <Navigation v-show="!navigation"/>
       <router-view />
       <Footer v-if="!navigation" />
@@ -30,6 +30,7 @@ export default {
       }
     });
     this.checkRoute();
+    this.$store.dispatch("getPost");
     
   },
   mounted() {},

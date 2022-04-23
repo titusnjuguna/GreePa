@@ -8,13 +8,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    sampleblogCards: [
-      { blogTitle: "The secod comig of Jesus", blogCoverPhoto: "stock-1", blogDate: "July 2,2021" },
-      { blogTitle: "Jesus is Alive", blogCoverPhoto: "stock-2", blogDate: "Aug 23,2022" },
-      { blogTitle: "Faith for Christ", blogCoverPhoto: "stock-3", blogDate: "March 29,2022" },
-      { blogTitle: "Life after Death", blogCoverPhoto: "stock-4", blogDate: "March 29,2022" },
-
-    ],
+    
     blogPosts: [],
     postLoaded: null,
     blogHTML: "Write your blog title here...",
@@ -31,9 +25,25 @@ export default new Vuex.Store({
     profileId: null,
     profileInitials: null
   },
+  getters:{
+    blogPostsFeed(state){
+      return state.blogPosts.slice(0,2);
+    },
+    blogPostsCards(state){
+      return state.blogPosts.slice(2,6);
+    }
+
+  },
   mutations: {
     updateBlogTitle(state,payload){
       state.blogTitle= payload;
+    },
+    setblogState(state,payload){
+      state.blogTitle = payload.blogTitle;
+      state.blogHTML = payload.blogHTML;
+      state.blogPhotoFileURL =payload.blogPhotoFileURL
+      state.blogPhotoName = payload.blogCoverPhotoName 
+
     },
     newBlogPost(state,payload){
       state.blogHTML = payload;
@@ -51,6 +61,9 @@ export default new Vuex.Store({
 
     toggleEditPost(state, payload) {
       state.editPost = payload;
+    },
+    filterblogPost(state,payload){
+      state.blogPosts = state.blogPosts.filter((post) => post.blogID !== payload);
     },
     setProfileInfo(state, doc) {
       state.profileId = doc.id;
@@ -81,8 +94,39 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    async getPosts({state}){
+      const database = await db.collection('blogPosts').orderBy('date','desc');
+      const dbResults = await database.get();
+      dbResults.forEach( (doc) => {
+        if(!state.blogPosts.some(post => post.blogID === doc.id)){
+          const data = {
+            blogID: doc.data().blogID,
+            blogHTML: doc.data().blogHTML,
+            blogCoverPhoto: doc.data().blogCoverPhoto,
+            blogTitle: doc.data().blogTitle,
+            blogDate: doc.data().date,
+            blogCoverPhotoName: doc.data().blogCoverPhotoName,
+          };
+          state.blogPosts.push(data);
+
+        }
+        
+        
+      });
+      state.postLoaded=true;
+    },
+    async  deletePost({ commit },payload){
+      const getPost = await db.collection("blogPosts").doc(payload);
+      await getPost.delete();
+      commit("filterblogPost",payload);
+    },
+    async updateblog({commit,dispatch},payload){
+      commit("filterblogPost", payload);
+      await dispatch("getPost")
+
+    },
     async getCurrentUser({ commit }) {
-      const database = await db.collection("users").doc(firebase.auth().currentUser.uid);
+      const database = await db.collection('users').doc(firebase.auth().currentUser.uid);
       const dbResult = await database.get();
       commit("setProfileInfo", dbResult);
       commit("setProfileInitials");
