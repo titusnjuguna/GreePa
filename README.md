@@ -1,4 +1,4 @@
-# fireblogs
+# Greepa blog
 
 ## Project setup
 ```
