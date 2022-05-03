@@ -4,7 +4,7 @@
       <BlogCoverPreview v-show="this.$store.state.blogPhotoPreview" />
        <Loading v-show="loading"/>
       <div class="container">
-          <div :class="{invisible: !error}" class="err-message">
+          <div :class="{invisible: !error}"  class="err-message">
           <p><span class="">Error:</span></p>
           </div>
           <div class="blog-info">

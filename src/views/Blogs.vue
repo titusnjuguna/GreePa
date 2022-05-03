@@ -1,7 +1,7 @@
 <template>
 <div class="blog-card-wrap">
     <div class="blog-cards container">
-        <span class="toggle-edit">
+        <span class="toggle-edit">Toggle Editing 
             <input type="checkbox" v-model="editPost">
         </span>
         <BlogCards v-for="(post,index) in blogPosts" :key="index" :post="post"/>

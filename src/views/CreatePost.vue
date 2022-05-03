@@ -21,7 +21,7 @@
 
           </div>
           <div class="editor">
-              <vue-editor :editorOptions="editorSettings"  v-model="blogHTML" useCustommageHandler @image-added ="imageHandler" />
+              <vue-editor :editorOptions="editorSettings"  v-model="blogHTML" useCustomImageHandler @image-added ="imageHandler" />
           </div>
           <div class="blog-actions">
               <button @click="uploadblog">Publish Post</button>
@@ -43,6 +43,8 @@ import "firebase/storage";
 import db from "../firebase/firebaseInit";
 import Quill from "quill";
 window.Quill = Quill;
+const ImageResize =  require("quill-image-resize-module").default;
+Quill.register("modules/imageResize", ImageResize);
 export default {
     name: "CreatePost",
     components:{
@@ -57,7 +59,7 @@ export default {
             errorMsg: null,
             editorSettings:{
                 modules:{
-                    ImageResize:{},
+                    imageResize:{},
                 }
             },
     }
@@ -94,7 +96,7 @@ export default {
                             const database = await db.collection('blogPosts').doc();
 
                             await database.set({
-                              blogId:database.id,
+                              blogID:database.id,
                               blogHTML : this.blogHTML,
                               blogCoverPhoto : downloadURL,
                               blogCoverPhotoName: this.blogCoverPhotoName,
@@ -102,7 +104,7 @@ export default {
                               profileId: this.profileId,
                               date: timestamp,
                             });
-                            await this.$store.dipatch("getPost");
+                            await this.$store.dispatch("getPost");
                             this.loading = false;
                             this.$router.push({name : "Viewblog",params:{blogid:database.id}});
                             //redirect page
@@ -155,7 +157,7 @@ export default {
                 return this.$store.state.blogTitle;
             },
             set(payload){
-                this.$store.commit('updateBlogTitle',payload);
+                this.$store.commit("updateBlogTitle", payload);
             }
         },
         blogHTML:{
@@ -163,7 +165,7 @@ export default {
                 return this.$store.state.blogHTML;
             },
             set(payload){
-                this.$store.commit('newBlogPost',payload);
+                this.$store.commit("newBlogPost", payload);
             }
         },
 

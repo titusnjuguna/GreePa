@@ -41,8 +41,8 @@ export default new Vuex.Store({
     setblogState(state,payload){
       state.blogTitle = payload.blogTitle;
       state.blogHTML = payload.blogHTML;
-      state.blogPhotoFileURL =payload.blogPhotoFileURL
-      state.blogPhotoName = payload.blogCoverPhotoName 
+      state.blogPhotoFileURL =payload.blogCoverPhoto;
+      state.blogPhotoName = payload.blogCoverPhotoName;
 
     },
     newBlogPost(state,payload){
@@ -94,27 +94,29 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    async getPosts({state}){
+    async getPost({state}){
       const database = await db.collection('blogPosts').orderBy('date','desc');
       const dbResults = await database.get();
       dbResults.forEach( (doc) => {
         if(!state.blogPosts.some(post => post.blogID === doc.id)){
-          const data = {
+          const data={
             blogID: doc.data().blogID,
             blogHTML: doc.data().blogHTML,
             blogCoverPhoto: doc.data().blogCoverPhoto,
             blogTitle: doc.data().blogTitle,
             blogDate: doc.data().date,
             blogCoverPhotoName: doc.data().blogCoverPhotoName,
-          };
+          }
           state.blogPosts.push(data);
 
         }
         
         
-      });
+      }
+      );
       state.postLoaded=true;
     },
+   
     async  deletePost({ commit },payload){
       const getPost = await db.collection("blogPosts").doc(payload);
       await getPost.delete();
